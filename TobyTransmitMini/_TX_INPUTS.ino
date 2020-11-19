@@ -32,16 +32,18 @@ void updateInputs()
 
 void getJoystick0Values() // Joystick X value
 {
-    int xPotValue = analogRead(JOYSTICK0_X_Pin); 
+    int xPotValue = analogRead(JOYSTICK0_X_Pin);
     joystick0ValueX = map(xPotValue, 0, 1023, 0, 180); // Joystick X value
     int yPotValue = analogRead(JOYSTICK0_Y_Pin);
-    joystick0ValueY = map(yPotValue, 0, 1023, 0, 180);  // Joystick Y value
-    joystick0ValueSw = 0; // Joystick Switch value
-    if (digitalRead(JOYSTICK0_SW_Pin) == 0) {
-      joystick0ValueSw = 1;
+    joystick0ValueY = map(yPotValue, 0, 1023, 0, 180); // Joystick Y value
+    joystick0ValueSw = 0;                              // Joystick Switch value
+    if (digitalRead(JOYSTICK0_SW_Pin) == 0)
+    {
+        joystick0ValueSw = 1; // invert to make sense (ie. 1 = on or pressed)
     }
 }
 
-void getButtonValues() {
-    bigRedButtonValue = digitalRead(BIG_RED_BUTTON_Pin); // Big red button value  
+void getButtonValues()
+{
+    bigRedButtonValue = digitalRead(BIG_RED_BUTTON_Pin); // Big red button value
 }
