@@ -9,8 +9,7 @@ int bigRedButtonValue;
 int bigYellowButtonValue;
 
 int encoderSwitchValue;
-int rotaryDirection;
-int rotaryCounterValue = 0;
+volatile int encoderCounter = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ///////////////                                                                                     //

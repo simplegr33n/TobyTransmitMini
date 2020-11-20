@@ -22,7 +22,7 @@ int ackData[4] = {-1, -1, -1, -1}; // values from robot (robotState, midDist, le
 
 void initNRF24()
 {
-    Serial.println("TobyTransmit initiating...");
+    Serial.println("NRF24L01 initiating...");
 
     radio.begin();
     radio.setDataRate(RF24_250KBPS);
@@ -69,7 +69,9 @@ void sendToToby()
         ackData[1] = -1;
         ackData[2] = -1;
         ackData[3] = -1;
-        Serial.println("  Tx failed");
+
+        // DEBUG
+        //Serial.println("  Tx failed");
     }
 
     // // DEBUG

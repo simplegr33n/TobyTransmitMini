@@ -35,6 +35,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET); // Dec
 
 void initOLED()
 {
+
+    Serial.println("OLED Display initiating...");
+
     // Get display
     if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
     {                                               // Address 0x3D for 128x64

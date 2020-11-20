@@ -9,8 +9,8 @@
 #define ENCODER_DT_Pin 6
 #define ENCODER_SW_Pin 7
 
-int currentStateCLK;
-int lastStateCLK;
+volatile uint8_t prevEncoderPhase;
+volatile uint8_t encoderPhase;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ///////////////                                                                                     //
@@ -28,10 +28,42 @@ void initInputs()
     pinMode(BIG_RED_BUTTON_Pin, INPUT);
     pinMode(BIG_YELLOW_BUTTON_Pin, INPUT);
 
-    // Set up encoder pins
-    pinMode(ENCODER_CLK_Pin, INPUT);
-    pinMode(ENCODER_DT_Pin, INPUT);
-    pinMode(ENCODER_SW_Pin, INPUT_PULLUP);
+    // Set up encoder switch
+    pinMode(ENCODER_SW_Pin, INPUT);
+
+    // Initialize Encoder innterupts
+    cli();
+    DDRD = 0b00000000; // Set all bits in Port D Data Direction Register to input
+    encoderPhase = PIND;
+    PCICR |= (1 << PCIE2);                     // Pin Change Interrupt Control Register enabling Port K
+    PCMSK2 |= (1 << PCINT21) | (1 << PCINT22); // Enable mask on PCINT21-22 to trigger interrupt on state change
+    sei();
+}
+
+// Handle pin change interrupt request 2.
+ISR(PCINT2_vect)
+{
+    prevEncoderPhase = encoderPhase;
+    encoderPhase = PIND; // get state of Port D with PIND
+
+    if (prevEncoderPhase == 207 && encoderPhase == 239) // NOTE: More precise encoder reading is possible
+    {                                                   // this simply accurately grabs each notch up or down
+        encoderCounter += 1;                            // assuming a reasonable turn speed of the encoder
+    }
+    else if (prevEncoderPhase == 175 && encoderPhase == 239)
+    {
+        encoderCounter -= 1;
+    }
+
+    // // DEBUG
+    // Serial.print("PREV: ");
+    // Serial.print(prevEncoderPhase);
+    // Serial.print(", CUR: ");
+    // Serial.println(encoderPhase);
+    // Serial.print("COUNTER: ");
+    // Serial.print(encoderCounter);
+    // Serial.print("sw:");
+    // Serial.print(digitalRead(ENCODER_SW_Pin));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +74,6 @@ void updateInputs()
 {
     getJoystick0Values();
     getButtonValues();
-    getEncoderValues();
 }
 
 void getJoystick0Values() // Joystick X value
@@ -62,55 +93,4 @@ void getButtonValues()
 {
     bigRedButtonValue = digitalRead(BIG_RED_BUTTON_Pin);       // Big red button value
     bigYellowButtonValue = digitalRead(BIG_YELLOW_BUTTON_Pin); // Big yellow button value
-}
-
-void getEncoderValues()
-{
-    getEncoderRotaryValues();
-    encoderSwitchValue = digitalRead(ENCODER_SW_Pin); // Encoder switch value
-
-    // DEBUG
-    Serial.print("ENCODER! Direction: ");
-    Serial.println(rotaryDirection);
-    Serial.print(" | Counter: ");
-    Serial.println(rotaryCounterValue);
-    Serial.print(" | Switch: ");
-    Serial.println(encoderSwitchValue);
-    if (rotaryDirection > 0)
-    {
-        lightRedLED();
-    }
-    else
-    {
-        lightBlueLED();
-    }
-}
-
-void getEncoderRotaryValues()
-{
-    // Read the current state of CLK
-    currentStateCLK = digitalRead(ENCODER_CLK_Pin);
-
-    // If last and current state of CLK are different, then pulse occurred
-    // React to only 1 state change to avoid double count
-    if (currentStateCLK != lastStateCLK && currentStateCLK == 1)
-    {
-
-        // If the DT state is different than the CLK state then
-        // the encoder is rotating CCW so decrement
-        if (digitalRead(ENCODER_DT_Pin) != currentStateCLK)
-        {
-            rotaryCounterValue--;
-            rotaryDirection = -1;
-        }
-        else
-        {
-            // Encoder is rotating CW so increment
-            rotaryCounterValue++;
-            rotaryDirection = 1;
-        }
-    }
-
-    // Remember last CLK state
-    lastStateCLK = currentStateCLK;
 }
