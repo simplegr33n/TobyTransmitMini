@@ -23,7 +23,7 @@ void ledStartupSequence()
 
     delay(500);
 
-    turnOffLEDs();
+    turnOffLED();
 }
 
 void lightRedLED()
@@ -38,7 +38,7 @@ void lightBlueLED()
     digitalWrite(BLUE_LED_PIN, HIGH);
 }
 
-void turnOffLEDs()
+void turnOffLED()
 {
     digitalWrite(RED_LED_PIN, LOW);
     digitalWrite(BLUE_LED_PIN, LOW);

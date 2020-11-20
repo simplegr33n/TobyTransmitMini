@@ -46,22 +46,28 @@ ISR(PCINT2_vect)
     prevEncoderPhase = encoderPhase;
     encoderPhase = PIND; // get state of Port D with PIND
 
-    if (prevEncoderPhase == 207 && encoderPhase == 239) // NOTE: More precise encoder reading is possible
+    if (prevEncoderPhase == 199 && encoderPhase == 231) // NOTE: More precise encoder reading is possible
     {                                                   // this simply accurately grabs each notch up or down
         encoderCounter += 1;                            // assuming a reasonable turn speed of the encoder
+        lightRedLED();
     }
-    else if (prevEncoderPhase == 175 && encoderPhase == 239)
+    else if (prevEncoderPhase == 167 && encoderPhase == 231)
     {
         encoderCounter -= 1;
+        lightBlueLED();
+    }
+    else
+    {
+        turnOffLED();
     }
 
     // // DEBUG
-    // Serial.print("PREV: ");
-    // Serial.print(prevEncoderPhase);
-    // Serial.print(", CUR: ");
-    // Serial.println(encoderPhase);
-    // Serial.print("COUNTER: ");
-    // Serial.print(encoderCounter);
+     Serial.print("PREV: ");
+     Serial.print(prevEncoderPhase);
+     Serial.print(", CUR: ");
+     Serial.println(encoderPhase);
+     Serial.print("COUNTER: ");
+     Serial.print(encoderCounter);
     // Serial.print("sw:");
     // Serial.print(digitalRead(ENCODER_SW_Pin));
 }
