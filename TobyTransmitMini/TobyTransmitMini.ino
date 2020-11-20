@@ -6,6 +6,11 @@ int joystick0ValueY;
 int joystick0ValueSw;
 
 int bigRedButtonValue;
+int bigYellowButtonValue;
+
+int encoderSwitchValue;
+int rotaryDirection;
+int rotaryCounterValue = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ///////////////                                                                                     //
@@ -17,9 +22,10 @@ void setup()
 {
     Serial.begin(115200);
 
-    initOLED();   // init display
-    initInputs(); // init transimitter inputs
-    initNRF24();  // init nrf24 transceiver
+    initIndicatorLeds(); // init indicator LEDS
+    initOLED();          // init display
+    initInputs();        // init transimitter inputs
+    initNRF24();         // init nrf24 transceiver
 }
 
 void loop()
