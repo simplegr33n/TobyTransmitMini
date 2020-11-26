@@ -11,32 +11,49 @@ void initIndicatorLeds()
 
 void ledStartupSequence()
 {
-    // crazyPurpleDelayThing();
+    crazyPurpleDelayThing();
 }
 
 void lightRedLED()
 {
-    analogWrite(RED_LED_PIN, map(settingLEDBrightness, 0, 100, 0, 255));
-    digitalWrite(BLUE_LED_PIN, LOW);
+    if (settingLEDBrightness > 0)
+    {
+        analogWrite(RED_LED_PIN, map(settingLEDBrightness, 0, 10, 0, 255));
+        digitalWrite(BLUE_LED_PIN, LOW);
+    }
+    else
+    {
+        analogWrite(RED_LED_PIN, 0);
+        analogWrite(BLUE_LED_PIN, 0);
+    }
 }
 
 void lightBlueLED()
 {
-    analogWrite(BLUE_LED_PIN, map(settingLEDBrightness, 0, 100, 0, 255));
-    digitalWrite(RED_LED_PIN, LOW);
+    if (settingLEDBrightness > 0)
+    {
+        analogWrite(BLUE_LED_PIN, map(settingLEDBrightness, 0, 10, 130, 255));
+        digitalWrite(RED_LED_PIN, LOW);
+    }
+    else
+    {
+        analogWrite(RED_LED_PIN, 0);
+        analogWrite(BLUE_LED_PIN, 0);
+    }
 }
 
 void lightPurpleLED()
 {
-    float purpleLEDred = 5 * ((float)settingLEDBrightness / 100);
-    float purpleLEDblue = 255 * ((float)settingLEDBrightness / 100);
-    // if (purpleLEDblue < 145)
-    // {
-    //     purpleLEDblue = 145;
-    // }
-
-    analogWrite(RED_LED_PIN, (int)purpleLEDred);
-    analogWrite(BLUE_LED_PIN, (int)purpleLEDblue);
+    if (settingLEDBrightness > 0)
+    {
+        analogWrite(RED_LED_PIN, map(settingLEDBrightness, 0, 10, 75, 225));
+        analogWrite(BLUE_LED_PIN, 255);
+    }
+    else
+    {
+        analogWrite(RED_LED_PIN, 0);
+        analogWrite(BLUE_LED_PIN, 0);
+    }
 }
 
 void turnOffLED()
@@ -47,138 +64,49 @@ void turnOffLED()
 
 void crazyPurpleDelayThing()
 {
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 255);
-
-    delay(20);
-
-    analogWrite(RED_LED_PIN, 20);
-    analogWrite(BLUE_LED_PIN, 255);
-
-    delay(20);
-    analogWrite(RED_LED_PIN, 30);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 40);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 50);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 60);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 70);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 80);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 90);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 100);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 125);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 150);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 175);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-    analogWrite(RED_LED_PIN, 200);
-    analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
     analogWrite(RED_LED_PIN, 255);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-
+    delay(150);
     analogWrite(RED_LED_PIN, 200);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 175);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 150);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 125);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 100);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 90);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 80);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 70);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 60);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 50);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 40);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 30);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 20);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
+    delay(150);
     analogWrite(RED_LED_PIN, 10);
     analogWrite(BLUE_LED_PIN, 255);
-    delay(20);
-
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 200);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 175);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 150);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 125);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 100);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 90);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 80);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 70);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 60);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 50);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 40);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 30);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 20);
-    delay(20);
-    analogWrite(RED_LED_PIN, 10);
-    analogWrite(BLUE_LED_PIN, 10);
-    delay(20);
+    delay(500);
 }

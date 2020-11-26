@@ -278,9 +278,9 @@ void displayMenu(void)
             {
                 MenuPosition = 0;
             }
-            if (MenuPosition < -1)
+            if (MenuPosition < 0)
             {
-                MenuPosition = 0;
+                MenuPosition = 1;
             }
             break;
         }
@@ -318,9 +318,9 @@ void displayMenu(void)
             {
                 MenuPosition = 0;
             }
-            if (MenuPosition < -1)
+            if (MenuPosition < 0)
             {
-                MenuPosition = 0;
+                MenuPosition = 1;
             }
             break;
         }
@@ -343,14 +343,6 @@ void displayMenu(void)
                 mnIconExitHL, 31, 14, 1);
             break;
         default:
-            if (MenuPosition > 1)
-            {
-                MenuPosition = 0;
-            }
-            if (MenuPosition < -1)
-            {
-                MenuPosition = 0;
-            }
             break;
         }
         break;

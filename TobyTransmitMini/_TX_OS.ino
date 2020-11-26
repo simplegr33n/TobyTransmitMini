@@ -198,11 +198,11 @@ void SetLEDBrightness()
 {
     int updateInt = settingLEDBrightness + SettingPosition;
 
-    if (updateInt > 100)
+    if (updateInt > 10)
     {
-        settingLEDBrightness = 100;
+        settingLEDBrightness = 10;
     }
-    else if (settingLEDBrightness < 0)
+    else if (updateInt < 0)
     {
         settingLEDBrightness = 0;
     }
