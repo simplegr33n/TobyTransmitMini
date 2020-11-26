@@ -1,5 +1,7 @@
+bool TxOsRunning = false; // TODO: does nothing for now, but could be used to reboot OS in cases of lost NRF cxn, etc.
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// For Inputs                                                                                          //
+// Hardware Inputs                                                                                     //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 int joystick0ValueX;
 int joystick0ValueY;
@@ -12,6 +14,12 @@ int encoderSwitchValue;
 volatile int encoderCounter = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+// OS vars                                                                                             //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+int MENU_STATE = 0; // 0 = off, 1 = Main Menu, 2 = Vehicle Settings, 3 = Controller Settings, 4 = Datalog,
+volatile int MenuPosition;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ///////////////                                                                                     //
 // END GLOBAL VARS                                                                                     //
 // ///////////////                                                                                     //
@@ -19,16 +27,17 @@ volatile int encoderCounter = 0;
 
 void setup()
 {
-    Serial.begin(115200);
-
-    initIndicatorLeds(); // init indicator LEDS
-    initOLED();          // init display
-    initInputs();        // init transimitter inputs
-    initNRF24();         // init nrf24 transceiver
+    bootTxOs();
 }
 
 void loop()
 {
-    updateInputs(); // get updated input states
-    sendRadioCom(); // send RF communication via NRF24L01
+    if (TxOsRunning)
+    {
+        TxOsLoop();
+    }
+    else
+    {
+        bootTxOs();
+    }
 }

@@ -46,13 +46,13 @@ void initOLED()
             ; // Don't proceed, loop forever
     }
 
-    displayInitSequence(); // play OLED init sequence
+    displayBootSequence(); // play OLED init sequence
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// OLED Display functions                                                                              //
+// OS Base functions                                                                                   //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void displayInitSequence(void)
+void displayBootSequence(void)
 {
     display.clearDisplay();
     // Draw TobySoft 3.0 bootscreen
@@ -62,16 +62,19 @@ void displayInitSequence(void)
         TS5_BMP, 128, 64, 1);
 
     display.display();
-    delay(1000); // show for 1 seconds
+    delay(3000); // show for 3 seconds
 }
 
-void updateDisplay()
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TxOS  Home Screen functions                                                                         //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// For Home / Home Graph
+void updateHomeScreen()
 {
     display.clearDisplay();
     drawSendHeader(); // show send data in header
     displayRxData();  // show rx data in the body
 }
-
 void drawSendHeader(void)
 {
     // Top bar
@@ -121,7 +124,6 @@ void drawSendHeader(void)
         display.println("N/C");
     }
 }
-
 void displayRxData(void)
 {
     if (ackData[0] != -1)
@@ -158,7 +160,6 @@ void displayRxData(void)
         display.display();
     }
 }
-
 void drawDistanceBlocks(void)
 {
 
@@ -185,4 +186,169 @@ void drawDistanceBlocks(void)
     display.fillRect(0, 16 + (48 * (leftHeight)), 34, 64, SSD1306_WHITE);    // LEFT (0-34)
     display.fillRect(35, 16 + (48 * (centerHeight)), 58, 64, SSD1306_WHITE); // CENTER (35-(64)-92)
     display.fillRect(94, 16 + (48 * (rightHeight)), 128, 64, SSD1306_WHITE); // RIGHT (94-128)
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TxOS  Menu functions                                                                                //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+void displayMenu(void)
+{
+    display.clearDisplay();
+    // Draw main menu header
+    display.drawBitmap(
+        0,
+        0,
+        mnHeader, 128, 16, 1);
+
+    switch (MENU_STATE)
+    {
+    case 1: // Main Menu
+        display.drawBitmap(
+            26,
+            1,
+            mnHeadingMenu, 69, 14, 1);
+
+        display.drawBitmap(
+            0,
+            17,
+            mnIconArray, 128, 48, 1);
+
+        switch (MenuPosition)
+        {
+        case 0:
+            display.fillRect(96, 1, 31, 14, SSD1306_BLACK);
+            display.drawBitmap(
+                96,
+                1,
+                mnIconExitHL, 31, 14, 1);
+            break;
+        case 1:
+            display.fillRect(1, 17, 41, 48, SSD1306_BLACK);
+            display.drawLine(4, 63, 39, 63, SSD1306_WHITE);
+            display.drawBitmap(
+                1,
+                17,
+                mnIconVehicleHL, 41, 48, 1);
+            break;
+        case 2:
+            display.fillRect(43, 17, 42, 48, SSD1306_BLACK);
+            display.drawLine(46, 63, 82, 63, SSD1306_WHITE);
+            display.drawBitmap(
+                43,
+                17,
+                mnIconTxConfgHL, 42, 48, 1);
+            break;
+        case 3:
+            display.fillRect(86, 17, 41, 48, SSD1306_BLACK);
+            display.drawLine(89, 63, 124, 63, SSD1306_WHITE);
+            display.drawBitmap(
+                86,
+                17,
+                mnIconDatalogHL, 41, 48, 1);
+            break;
+        default:
+            if (MenuPosition > 3)
+            {
+                MenuPosition = 0;
+            }
+            if (MenuPosition < 0)
+            {
+                MenuPosition = 3;
+            }
+            break;
+        }
+        break;
+    case 2: // Vehicle Settings
+        display.drawBitmap(
+            26,
+            1,
+            mnHeadingVehicle, 69, 14, 1);
+
+        display.fillRect(0, 17, 128, 48, SSD1306_BLACK);
+
+        switch (MenuPosition)
+        {
+        case 0:
+            display.fillRect(96, 1, 31, 14, SSD1306_BLACK);
+            display.drawBitmap(
+                96,
+                1,
+                mnIconExitHL, 31, 14, 1);
+            break;
+        default:
+            if (MenuPosition > 1)
+            {
+                MenuPosition = 0;
+            }
+            if (MenuPosition < -1)
+            {
+                MenuPosition = 0;
+            }
+            break;
+        }
+        break;
+    case 3: // Controller Settings
+        display.drawBitmap(
+            26,
+            1,
+            mnHeadingTxConfg, 69, 14, 1);
+
+        display.fillRect(0, 17, 128, 48, SSD1306_BLACK);
+
+        switch (MenuPosition)
+        {
+        case 0:
+            display.fillRect(96, 1, 31, 14, SSD1306_BLACK);
+            display.drawBitmap(
+                96,
+                1,
+                mnIconExitHL, 31, 14, 1);
+            break;
+        default:
+            if (MenuPosition > 1)
+            {
+                MenuPosition = 0;
+            }
+            if (MenuPosition < -1)
+            {
+                MenuPosition = 0;
+            }
+            break;
+        }
+        break;
+    case 4: // Datalog
+        display.drawBitmap(
+            26,
+            1,
+            mnHeadingDatalog, 69, 14, 1);
+
+        display.fillRect(0, 17, 128, 48, SSD1306_BLACK);
+
+        switch (MenuPosition)
+        {
+        case 0:
+            display.fillRect(96, 1, 31, 14, SSD1306_BLACK);
+            display.drawBitmap(
+                96,
+                1,
+                mnIconExitHL, 31, 14, 1);
+            break;
+        default:
+            if (MenuPosition > 1)
+            {
+                MenuPosition = 0;
+            }
+            if (MenuPosition < -1)
+            {
+                MenuPosition = 0;
+            }
+            break;
+        }
+        break;
+    default:
+
+        break;
+    }
+
+    display.display();
 }

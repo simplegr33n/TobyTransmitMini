@@ -1,6 +1,6 @@
 # Toby Transmit Mini
 
-Arduino Nano based RF controller.
+A battery powered Arduino Nano based 7+ channel RF controller.
 
 ## COMPONENTS
 

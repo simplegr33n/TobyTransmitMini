@@ -49,12 +49,19 @@ ISR(PCINT2_vect)
     if (prevEncoderPhase == 199 && encoderPhase == 231) // NOTE: More precise encoder reading is possible
     {                                                   // this simply accurately grabs each notch up or down
         encoderCounter += 1;                            // assuming a reasonable turn speed of the encoder
-        lightRedLED();
+
+        if (MENU_STATE != 0)
+        {
+            MenuPosition += 1;
+        }
     }
     else if (prevEncoderPhase == 167 && encoderPhase == 231)
     {
         encoderCounter -= 1;
-        lightBlueLED();
+        if (MENU_STATE != 0)
+        {
+            MenuPosition -= 1;
+        }
     }
     else
     {
@@ -62,12 +69,12 @@ ISR(PCINT2_vect)
     }
 
     // // DEBUG
-     Serial.print("PREV: ");
-     Serial.print(prevEncoderPhase);
-     Serial.print(", CUR: ");
-     Serial.println(encoderPhase);
-     Serial.print("COUNTER: ");
-     Serial.print(encoderCounter);
+    // Serial.print("PREV: ");
+    // Serial.print(prevEncoderPhase);
+    // Serial.print(", CUR: ");
+    // Serial.println(encoderPhase);
+    // Serial.print("COUNTER: ");
+    // Serial.print(encoderCounter);
     // Serial.print("sw:");
     // Serial.print(digitalRead(ENCODER_SW_Pin));
 }
@@ -88,15 +95,22 @@ void getJoystick0Values() // Joystick X value
     joystick0ValueX = map(xPotValue, 0, 1023, 0, 180); // Joystick X value
     int yPotValue = analogRead(JOYSTICK0_Y_Pin);
     joystick0ValueY = map(yPotValue, 0, 1023, 0, 180); // Joystick Y value
-    joystick0ValueSw = 0;                              // Joystick Switch value
-    if (digitalRead(JOYSTICK0_SW_Pin) == 0)
-    {
-        joystick0ValueSw = 1;
-    }
 }
 
 void getButtonValues()
 {
     bigRedButtonValue = digitalRead(BIG_RED_BUTTON_Pin);       // Big red button value
     bigYellowButtonValue = digitalRead(BIG_YELLOW_BUTTON_Pin); // Big yellow button value
+
+    joystick0ValueSw = 0; // Joystick Switch value
+    if (digitalRead(JOYSTICK0_SW_Pin) == 0)
+    {
+        joystick0ValueSw = 1;
+    }
+
+    encoderSwitchValue = 0; // Encoder switch value
+    if (digitalRead(ENCODER_SW_Pin) == 0)
+    {
+        encoderSwitchValue = 1;
+    }
 }
