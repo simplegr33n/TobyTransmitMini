@@ -11,6 +11,8 @@
 
 volatile uint8_t ENCODER_PHASE;
 volatile uint8_t PREV_ENCODER_PHASE;
+volatile bool ENCODER_INCREASE;
+volatile bool ENCODER_DECREASE;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ///////////////                                                                                     //
@@ -51,15 +53,22 @@ ISR(PCINT2_vect)
     PREV_ENCODER_PHASE = ENCODER_PHASE;
     ENCODER_PHASE = PIND; // Get state of Port D
 
-    if (ENCODER_PHASE & 0b01100000)
+    if ((ENCODER_PHASE & 0b01100000))
     {
-        if ((PREV_ENCODER_PHASE & 0b01000000) && !(PREV_ENCODER_PHASE & 0b00100000))
+        Serial.println(PREV_ENCODER_PHASE);
+
+        if (PREV_ENCODER_PHASE & 0b01000000 && !(PREV_ENCODER_PHASE & 0b00100000))
         {
-            updateEncoderCounters(1);
+            updateEncoderCounters(1); // increase
+            Serial.println("up");
+            return;
         }
-        else if ((PREV_ENCODER_PHASE & 0b00100000) && !(PREV_ENCODER_PHASE & 0b01000000))
+
+        if (PREV_ENCODER_PHASE & 0b00100000 && !(PREV_ENCODER_PHASE & 0b01000000))
         {
-            updateEncoderCounters(-1);
+            updateEncoderCounters(-1); // decrease
+            Serial.println("dwn");
+            return;
         }
     }
     sei();

@@ -294,7 +294,7 @@ void displayMenu(void)
         display.fillRect(0, 17, 128, 48, SSD1306_BLACK);
 
         // LED Brightness text
-        display.setTextSize(1); // 3:1 pixel scale
+        display.setTextSize(1);
         display.setTextColor(SSD1306_WHITE);
         display.setCursor(2, 19);
         display.println("LED Brightness:");
@@ -311,14 +311,7 @@ void displayMenu(void)
                 mnIconExitHL, 31, 14, 1);
             break;
         case 1: // LED Brightness option
-            display.fillRect(1, 18, 128, 10, SSD1306_WHITE);
-            // LED Brightness text
-            display.setTextSize(1); // 3:1 pixel scale
-            display.setTextColor(SSD1306_BLACK);
-            display.setCursor(2, 19);
-            display.println("LED Brightness:");
-            display.setCursor(96, 19);
-            display.println(settingLEDBrightness);
+            drawSettingRowHL("LED Brightness:", settingLEDBrightness, 18);
             break;
         default:
             if (MenuPosition > 1)
@@ -367,4 +360,30 @@ void displayMenu(void)
     }
 
     display.display();
+}
+
+void drawSettingRowHL(String settingName, int settingValue, int settingRowStart)
+{
+    if (SETTING_STATE == 1)
+    {
+        display.setTextSize(1);
+        display.fillRect(1, settingRowStart, 128, 10, SSD1306_WHITE);
+        display.setTextColor(SSD1306_BLACK);
+        display.setCursor(2, settingRowStart + 1);
+        display.println(settingName);
+        display.fillRect(95, settingRowStart, 126, 10, SSD1306_BLACK);
+        display.setTextColor(SSD1306_WHITE);
+        display.setCursor(96, settingRowStart + 1);
+        display.println(settingValue);
+    }
+    else
+    {
+        display.setTextSize(1);
+        display.drawRect(1, settingRowStart, 128, 10, SSD1306_WHITE);
+        display.setTextColor(SSD1306_WHITE);
+        display.setCursor(2, settingRowStart + 1);
+        display.println(settingName);
+        display.setCursor(96, settingRowStart + 1);
+        display.println(settingValue);
+    }
 }
