@@ -9,8 +9,8 @@
 #define ENCODER_DT_Pin 6
 #define ENCODER_SW_Pin 7
 
-volatile uint8_t prevEncoderPhase;
-volatile uint8_t encoderPhase;
+volatile uint8_t ENCODER_PHASE;
+volatile uint8_t PREV_ENCODER_PHASE;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ///////////////                                                                                     //
@@ -28,60 +28,64 @@ void initInputs()
     pinMode(BIG_RED_BUTTON_Pin, INPUT);
     pinMode(BIG_YELLOW_BUTTON_Pin, INPUT);
 
-    // Set up encoder switch
+    // Set up encoder pots and switch
+    pinMode(ENCODER_CLK_Pin, INPUT);
+    pinMode(ENCODER_DT_Pin, INPUT);
     pinMode(ENCODER_SW_Pin, INPUT);
 
-    // Initialize Encoder innterupts
+    // Initialize Encoder interrupts
     cli();
-    DDRD = 0b00000000; // Set all bits in Port D Data Direction Register to input
-    encoderPhase = PIND;
+    ENCODER_PHASE = PIND;                      // Get state of Port D
     PCICR |= (1 << PCIE2);                     // Pin Change Interrupt Control Register enabling Port K
     PCMSK2 |= (1 << PCINT21) | (1 << PCINT22); // Enable mask on PCINT21-22 to trigger interrupt on state change
     sei();
 }
 
-// Handle pin change interrupt request 2.
-ISR(PCINT2_vect)
-{
-    prevEncoderPhase = encoderPhase;
-    encoderPhase = PIND; // get state of Port D with PIND
-
-    if (prevEncoderPhase == 199 && encoderPhase == 231) // NOTE: More precise encoder reading is possible
-    {                                                   // this simply accurately grabs each notch up or down
-        encoderCounter += 1;                            // assuming a reasonable turn speed of the encoder
-
-        if (MENU_STATE != 0)
-        {
-            MenuPosition += 1;
-        }
-    }
-    else if (prevEncoderPhase == 167 && encoderPhase == 231)
-    {
-        encoderCounter -= 1;
-        if (MENU_STATE != 0)
-        {
-            MenuPosition -= 1;
-        }
-    }
-    else
-    {
-        turnOffLED();
-    }
-
-    // // DEBUG
-    // Serial.print("PREV: ");
-    // Serial.print(prevEncoderPhase);
-    // Serial.print(", CUR: ");
-    // Serial.println(encoderPhase);
-    // Serial.print("COUNTER: ");
-    // Serial.print(encoderCounter);
-    // Serial.print("sw:");
-    // Serial.print(digitalRead(ENCODER_SW_Pin));
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Input functions                                                                                     //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Handle Pin Change Interrupt Vector
+ISR(PCINT2_vect)
+{
+    cli();
+    PREV_ENCODER_PHASE = ENCODER_PHASE;
+    ENCODER_PHASE = PIND; // Get state of Port D
+
+    if (ENCODER_PHASE & 0b01100000)
+    {
+        if ((PREV_ENCODER_PHASE & 0b01000000) && !(PREV_ENCODER_PHASE & 0b00100000))
+        {
+            updateEncoderCounters(1);
+        }
+        else if ((PREV_ENCODER_PHASE & 0b00100000) && !(PREV_ENCODER_PHASE & 0b01000000))
+        {
+            updateEncoderCounters(-1);
+        }
+    }
+    sei();
+}
+
+void updateEncoderCounters(int changeValue)
+{
+    // // DEBUG
+    // Serial.print("encoderCounter");
+    // Serial.println(encoderCounter);
+
+    if (SETTING_STATE != 0) // if currently setting
+    {
+        SettingPosition += changeValue;
+        return;
+    }
+    else if (MENU_STATE != 0) // if currently in menu
+    {
+        MenuPosition += changeValue;
+        return;
+    }
+    else
+    {
+        encoderCounter += changeValue; // only change actual encoder counter (a value which is transmitted) if not in menu/setting something
+    }
+}
 
 void updateInputs()
 {

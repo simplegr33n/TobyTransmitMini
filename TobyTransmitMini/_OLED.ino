@@ -130,7 +130,7 @@ void displayRxData(void)
     {
         drawDistanceBlocks();
 
-        // L / R text
+        // L / C / R distances text
         display.setTextSize(1.5); // 1.5:1 pixel scale
         display.setTextColor(SSD1306_WHITE);
 
@@ -150,7 +150,7 @@ void displayRxData(void)
     }
     else
     {
-        // L / R text
+        // Note Connected text
         display.setTextSize(3.5); // 3:1 pixel scale
         display.setTextColor(SSD1306_WHITE);
 
@@ -207,7 +207,6 @@ void displayMenu(void)
             26,
             1,
             mnHeadingMenu, 69, 14, 1);
-
         display.drawBitmap(
             0,
             17,
@@ -263,7 +262,6 @@ void displayMenu(void)
             26,
             1,
             mnHeadingVehicle, 69, 14, 1);
-
         display.fillRect(0, 17, 128, 48, SSD1306_BLACK);
 
         switch (MenuPosition)
@@ -295,6 +293,14 @@ void displayMenu(void)
 
         display.fillRect(0, 17, 128, 48, SSD1306_BLACK);
 
+        // LED Brightness text
+        display.setTextSize(1); // 3:1 pixel scale
+        display.setTextColor(SSD1306_WHITE);
+        display.setCursor(2, 19);
+        display.println("LED Brightness:");
+        display.setCursor(96, 19);
+        display.println(settingLEDBrightness);
+
         switch (MenuPosition)
         {
         case 0:
@@ -303,6 +309,16 @@ void displayMenu(void)
                 96,
                 1,
                 mnIconExitHL, 31, 14, 1);
+            break;
+        case 1: // LED Brightness option
+            display.fillRect(1, 18, 128, 10, SSD1306_WHITE);
+            // LED Brightness text
+            display.setTextSize(1); // 3:1 pixel scale
+            display.setTextColor(SSD1306_BLACK);
+            display.setCursor(2, 19);
+            display.println("LED Brightness:");
+            display.setCursor(96, 19);
+            display.println(settingLEDBrightness);
             break;
         default:
             if (MenuPosition > 1)
