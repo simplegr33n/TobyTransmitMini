@@ -53,33 +53,30 @@ ISR(PCINT2_vect)
     PREV_ENCODER_PHASE = ENCODER_PHASE;
     ENCODER_PHASE = PIND; // Get state of Port D
 
-    if ((ENCODER_PHASE & 0b01100000))
+    if ((ENCODER_PHASE != PREV_ENCODER_PHASE))
     {
-        Serial.println(PREV_ENCODER_PHASE);
-
-        if (PREV_ENCODER_PHASE & 0b01000000 && !(PREV_ENCODER_PHASE & 0b00100000))
+        if (ENCODER_PHASE & 0b01000000 && !(PREV_ENCODER_PHASE & 0b01000000)) // if CLK pin has changed
         {
-            updateEncoderCounters(1); // increase
-            Serial.println("up");
-            return;
+            if (ENCODER_PHASE & 0b00100000) // if CLK differs from DT
+            {
+                updateEncoderCounters(-1); // decrease
+                return;
+            }
+            else
+            {
+                updateEncoderCounters(1); // increase
+                return;
+            }
         }
 
-        if (PREV_ENCODER_PHASE & 0b00100000 && !(PREV_ENCODER_PHASE & 0b01000000))
-        {
-            updateEncoderCounters(-1); // decrease
-            Serial.println("dwn");
-            return;
-        }
+        //  NOTE: Only using CLK changes to both keep ISR short and because higher acuity makes the cursor move to quickly in the menu
+        // setable rotary sensitivity may be a nice feature, but might best be accomplished here with a simple multiplier
     }
     sei();
 }
 
 void updateEncoderCounters(int changeValue)
 {
-    // // DEBUG
-    // Serial.print("encoderCounter");
-    // Serial.println(encoderCounter);
-
     if (SETTING_STATE != 0) // if currently setting
     {
         SettingPosition += changeValue;

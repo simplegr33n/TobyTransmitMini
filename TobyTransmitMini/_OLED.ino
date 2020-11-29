@@ -293,13 +293,8 @@ void displayMenu(void)
 
         display.fillRect(0, 17, 128, 48, SSD1306_BLACK);
 
-        // LED Brightness text
-        display.setTextSize(1);
-        display.setTextColor(SSD1306_WHITE);
-        display.setCursor(2, 19);
-        display.println("LED Brightness:");
-        display.setCursor(96, 19);
-        display.println(settingLEDBrightness);
+        drawSettingRow("Joystick Options", 0, 18, false);
+        drawSettingRow("LED Brightness:", settingLEDBrightness, 30, true);
 
         switch (MenuPosition)
         {
@@ -310,17 +305,20 @@ void displayMenu(void)
                 1,
                 mnIconExitHL, 31, 14, 1);
             break;
-        case 1: // LED Brightness option
-            drawSettingRowHL("LED Brightness:", settingLEDBrightness, 18);
+        case 1: // Joystick Options
+            drawSettingRowHL("Joystick Options", 0, 18, false);
+            break;
+        case 2: // LED Brightness option
+            drawSettingRowHL("LED Brightness:", settingLEDBrightness, 30, true);
             break;
         default:
-            if (MenuPosition > 1)
+            if (MenuPosition > 2)
             {
                 MenuPosition = 0;
             }
             if (MenuPosition < 0)
             {
-                MenuPosition = 1;
+                MenuPosition = 2;
             }
             break;
         }
@@ -354,7 +352,20 @@ void displayMenu(void)
     display.display();
 }
 
-void drawSettingRowHL(String settingName, int settingValue, int settingRowStart)
+void drawSettingRow(String settingName, int settingValue, int settingRowStart, bool showSettingValue)
+{
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(2, settingRowStart + 1);
+    display.println(settingName);
+    if (showSettingValue == true)
+    {
+        display.setCursor(96, settingRowStart + 1);
+        display.println(settingValue);
+    }
+}
+
+void drawSettingRowHL(String settingName, int settingValue, int settingRowStart, bool showSettingValue)
 {
     if (SETTING_STATE == 1)
     {
@@ -375,7 +386,10 @@ void drawSettingRowHL(String settingName, int settingValue, int settingRowStart)
         display.setTextColor(SSD1306_WHITE);
         display.setCursor(2, settingRowStart + 1);
         display.println(settingName);
-        display.setCursor(96, settingRowStart + 1);
-        display.println(settingValue);
+        if (showSettingValue == true)
+        {
+            display.setCursor(96, settingRowStart + 1);
+            display.println(settingValue);
+        }
     }
 }

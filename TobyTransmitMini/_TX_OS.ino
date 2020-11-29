@@ -22,7 +22,7 @@ void bootTxOs()
 
 void TxOsLoop()
 {
-    lightPurpleLED();
+    lightRedLED();
 
     sendRadioCom(); // send RF communication via NRF24L01
     updateInputs(); // get updated input states
@@ -101,7 +101,11 @@ void MenuHandler()
                 CloseMenu();
                 return;
                 break;
-            case 1: // LED Brightness
+            case 1: // Joystick Options
+                // OpenJoystickOptions();
+                return;
+                break;
+            case 2: // LED Brightness
                 if (SETTING_STATE == 1)
                 {
                     SETTING_STATE = 0;
@@ -173,7 +177,10 @@ void SettingsHandler()
         case 3: // Controller Settings
             switch (MenuPosition)
             {
-            case 1: // LED Brightness
+            case 1: // Joystick Trimming
+                SetJsTrimming();
+                break;
+            case 2: // LED Brightness
                 SetLEDBrightness();
                 break;
             default:
@@ -194,6 +201,7 @@ void SettingsHandler()
     }
 }
 
+// Tx Config
 void SetLEDBrightness()
 {
     int updateInt = settingLEDBrightness + SettingPosition;
@@ -212,4 +220,9 @@ void SetLEDBrightness()
     }
 
     SettingPosition = 0;
+}
+
+// Vehicle settings
+void SetJsTrimming()
+{
 }
